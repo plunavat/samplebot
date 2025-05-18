@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './Chatbot.css';
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([
@@ -10,25 +9,6 @@ const Chatbot = () => {
   const [userData, setUserData] = useState({});
   const [showModel, setShowModel] = useState(false);
   const [enquirySent, setEnquirySent] = useState(false);
-
-  const sendEmail = async (data) => {
-    try {
-      await fetch('https://formspree.io/f/your_form_id', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          flow: data.flow,
-          head: data.head,
-          application: data.application,
-          model: 'ES65/40'
-        })
-      });
-    } catch (err) {
-      console.error('Email sending failed', err);
-    }
-  };
 
   const handleSend = (injectedInput) => {
     const currentInput = injectedInput || input;
@@ -58,7 +38,6 @@ const Chatbot = () => {
         if (currentInput.toLowerCase().includes('yes')) {
           botResponse = 'Your enquiry has been submitted. Our team will contact you soon.';
           setEnquirySent(true);
-          sendEmail(userData);
         } else {
           botResponse = 'Okay, let us know if you need further assistance.';
         }
@@ -78,7 +57,7 @@ const Chatbot = () => {
       <div className="chatbot-header">Pump Selection Assistant</div>
       <div className="chatbot-messages">
         {messages.map((msg, idx) => (
-          <div key={idx} className={\`message \${msg.from}\`}>{msg.text}</div>
+          <div key={idx} className={`message ${msg.from}`}>{msg.text}</div>
         ))}
         {showModel && !enquirySent && (
           <div className="model-suggestion">
@@ -98,6 +77,78 @@ const Chatbot = () => {
         <button onClick={() => handleSend()}>Send</button>
       </div>
 
+      <style jsx>{`
+        .chatbot-wrapper {
+          border: 2px solid #b10000;
+          border-radius: 10px;
+          width: 100%;
+          max-width: 400px;
+          margin: auto;
+          font-family: Arial, sans-serif;
+          box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .chatbot-header {
+          background-color: #b10000;
+          color: white;
+          padding: 10px;
+          font-weight: bold;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+        }
+        .chatbot-messages {
+          padding: 10px;
+          height: 300px;
+          overflow-y: auto;
+          background: #f9f9f9;
+        }
+        .message {
+          margin-bottom: 10px;
+          padding: 8px 12px;
+          border-radius: 5px;
+        }
+        .message.bot {
+          background-color: #eee;
+          align-self: flex-start;
+        }
+        .message.user {
+          background-color: #b10000;
+          color: white;
+          align-self: flex-end;
+        }
+        .model-suggestion {
+          background-color: #fff6f6;
+          border: 1px solid #b10000;
+          padding: 10px;
+          border-radius: 5px;
+          margin-top: 10px;
+        }
+        .enquiry-btn {
+          margin-top: 10px;
+          padding: 6px 12px;
+          background-color: #b10000;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        .chatbot-input {
+          display: flex;
+          border-top: 1px solid #ddd;
+        }
+        .chatbot-input input {
+          flex: 1;
+          padding: 10px;
+          border: none;
+          outline: none;
+        }
+        .chatbot-input button {
+          background: #b10000;
+          color: white;
+          border: none;
+          padding: 10px 15px;
+          cursor: pointer;
+        }
+      `}</style>
     </div>
   );
 };
